@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Get timestamp
+timestamp=$(date +%s)
+
+# MacOS variant (not using gdate)
+echo $timestamp >> ../tables/daily_epochs
+date -r $timestamp +%Y-%m-%d\ %H:%M >> ../tables/daily
+date -r $timestamp +%U\|\ %a\ %d.\ %b\ \ \ %H:%M >> ../tables/daily_pretty
+
+# Print end of file
+tail tables/daily_pretty

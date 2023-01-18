@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Get timestamp
+timestamp=$(date +%s)
+
+# Add variable to end of last line
+sed -i "$ s/$/ $timestamp/" tables/daily_epochs
+sed -i "$ s/$/ $(date -d@$timestamp +%Y-%m-%d\ %H:%M)/" tables/daily
+sed -i "$ s/$/ - $(date -d@$timestamp +%H:%M)/" tables/daily_pretty
+
+# Calculate time difference in seconds (checkout - checkin)
+checkin=$(awk 'END {print $1, $2}' tables/daily)
+checkin_epochs=$(date -d $checkin +%s)
+diff=$(( timestamp - checkin_epochs))
+
+# Create function to convert seconds to hours:minutes
+convert_to_hm() {
+  hrs=$(($1 / 3600))
+  hrs=$(printf "%02d\n" $hrs)
+  remainder=$(($1 % 3600))
+  mins=$((remainder / 60))
+  mins=$(printf "%02d\n" $mins)
+  echo ":" $hrs:$mins
+}
+
+# Append difference to tables
+sed -i "$ s/$/ $diff/" tables/daily_epochs
+sed -i "$ s/$/ $(convert_to_hm $diff)/" tables/daily_pretty

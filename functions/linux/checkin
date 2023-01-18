@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Get timestamp
+timestamp=$(date +%s)
+
+# Add timestamp to files
+echo $timestamp >> tables/daily_epochs
+date -d@$timestamp "+%Y-%m-%d %H:%M" >> tables/daily
+date -d@$timestamp "+%U| %a %d. %b   %H:%M" >> tables/daily_pretty
+
+# Print end of file
+tail tables/daily_pretty
